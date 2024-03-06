@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交易记录器</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .container { margin: auto; width: 50%; padding: 10px; }
+    label { margin-top: 10px; display: block; }
+    input, select { margin-bottom: 10px; width: 100%; padding: 8px; }
+    button { padding: 10px 15px; margin-top: 10px; display: block; }
+    #output { margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>交易记录</h2>
+    <label for="currency">购买币种:</label>
+    <select id="currency">
+        <option value="BTC">BTC</option>
+        <option value="ETF">ETF</option>
+    </select>
+    
+    <label for="entryPosition">入场位置:</label>
+    <input type="number" id="entryPosition" placeholder="输入入场位置">
+    
+    <label for="profitPoints">盈利点数:</label>
+    <input type="number" id="profitPoints" placeholder="输入盈利点数">
+    
+    <label for="currentPosition">现有仓位:</label>
+    <input type="number" id="currentPosition" placeholder="输入现有仓位">
+    
+    <button id="submit">保存记录</button>
+</div>
+
+<div id="output"></div>
+
+<script>
+function saveTrade() {
+    const trade = {
+        currency: document.getElementById('currency').value,
+        entryPosition: document.getElementById('entryPosition').value,
+        profitPoints: document.getElementById('profitPoints').value,
+        currentPosition: document.getElementById('currentPosition').value,
+    };
+    
+    // 将对象转换为JSON字符串
+    const tradeStr = JSON.stringify(trade);
+    
+    // 使用当前时间戳作为键，存储到LocalStorage
+    localStorage.setItem(Date.now().toString(), tradeStr);
+    
+    showTrades();
+}
+
+function showTrades() {
+    const output = document.getElementById('output');
+    output.innerHTML = '<h3>已保存的交易记录：</h3>';
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const tradeStr = localStorage.getItem(key);
+        const trade = JSON.parse(tradeStr);
+        output.innerHTML += `<div>币种: ${trade.currency}, 入场位置: ${trade.entryPosition}, 盈利点数: ${trade.profitPoints}, 现有仓位: ${trade.currentPosition}</div>`;
+    }
+}
+
+document.getElementById('submit').onclick = saveTrade;
+window.onload = showTrades; // 页面加载完成时显示已保存的交易
+</script>
+</body>
+</html>
